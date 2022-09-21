@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-800 min-h-screen block;
+}
+
+.btn {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.btn__danger {
+  @apply bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded;
+}
+
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-700;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-500 rounded-md;
+}
+
+div.swiper-button-prev {
+  @apply left-0;
+}
+
+div.swiper-button-next,
+div.swiper-button-prev {
+  @apply bg-gray-700  font-bold rounded-full p-10 text-white;
+}

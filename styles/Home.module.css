@@ -1,0 +1,7 @@
+.homeContainer {
+  min-height: 100vh;
+}
+
+.bgOverlay {
+  background: rgba(0, 0, 0, 0.389);
+}
