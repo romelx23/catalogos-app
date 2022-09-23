@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { CatalogContext } from "../../context";
 import { useFetch } from "../../hooks/useFetch";
 import { useFiles } from "../../hooks/useFiles";
 import { useForm } from "../../hooks/useForm";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
-SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
+import { ImageCard } from "./ImageCard";
 
 export const FormCatalog = () => {
   const { postForm, deleteCatalog, updateCatalog } = useFetch();
-  const { files, getFiles } = useFiles();
-  const [catalogs, setCatalogs] = useState([]);
+  const {
+    addCatalog,
+    updateCatalog: updateCatalogContext,
+    deleteCatalog: deleteCatalogContext,
+    searchCatalog,
+    catalogs,
+  } = useContext(CatalogContext);
+
   const [update, setUpdate] = useState(false);
   const [search, setSearch] = useState("");
   const { values, setValues, handleInputChange, reset } = useForm({
@@ -25,13 +26,14 @@ export const FormCatalog = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(values, new Date(values.pub_date).toISOString());
-    postForm({
+    const values = {
       title: values.title,
       img: values.img,
       pub_date: new Date(values.pub_date).toISOString(),
       url_download: values.url_download,
-    });
-    getFiles();
+    }
+    postForm(values);
+    addCatalog(values);
     reset();
   };
   const selectUpdate = (catalog) => {
@@ -51,12 +53,12 @@ export const FormCatalog = () => {
     e.preventDefault();
     console.log("update", id, values);
     updateCatalog(id, values);
-    getFiles();
+    updateCatalogContext(id, values);
     setUpdate(false);
     reset();
   };
   const handleDelete = (id) => {
-    setCatalogs(catalogs.filter((catalog) => catalog.id !== id));
+    deleteCatalogContext(id);
     deleteCatalog(id);
   };
 
@@ -67,20 +69,12 @@ export const FormCatalog = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const filtered = files.filter((catalog) => {
-      return catalog.title.toLowerCase().includes(search.toLowerCase());
-    });
-    // console.log(filtered);
-    setCatalogs(filtered);
-  };
-  const parseDate = (date) => {
-    const newDate = new Date(date);
-    return newDate.toLocaleDateString();
+    searchCatalog(search);
   };
 
-  useEffect(() => {
-    setCatalogs(files);
-  }, [files]);
+  const handleCopy = (file) => {
+    navigator.clipboard.writeText(file);
+  };
   return (
     <div className="w-full ">
       <div className="flex flex-col items-center justify-center">
@@ -237,33 +231,48 @@ export const FormCatalog = () => {
             </button>
           </form>
         </div>
-        <div className="w-full max-w-xl">
-          <Swiper
-            spaceBetween={90}
-            slidesPerView={2}
-            scrollbar={{ draggable: true }}
-            onSwiper={(swiper) => console.log(swiper)}
-            tag="section"
-            wrapperTag="ul"
-            navigation
-            pagination
-            className="flex justify-center cursor-grab"
-          >
-            {/* <div className="swiper flex gap-4 overflow-x-auto max-w-xs md:max-w-lg px-4 py-2"> */}
-            {catalogs.map((file) => (
-              <SwiperSlide key={file.id}>
-                <div
-                  key={file.id}
-                  className="flex flex-col items-center gap-2 flex-shrink-0 w-40"
-                >
-                  <h3 className="text-white">{file.title}</h3>
-                  <h5 className="text-white">{parseDate(file.pub_date)}</h5>
-                  <img
-                    src={file.img}
-                    alt={file.title}
-                    className="w-28 h-40 object-contain"
-                  />
-                  <div className="flex flex-col gap-2">
+        <div className="w-full px-8 overflow-x-auto mb-4">
+          <table className="table-auto w-full mt-4 mb-2 text-white">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 capitalize">Título</th>
+                <th className="px-4 py-2">Fecha de publicación</th>
+                <th className="px-4 py-2">Imagen</th>
+                <th className="px-4 py-2">Url de descarga</th>
+                <th className="px-4 py-2">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {catalogs.map((file) => (
+                <tr key={file.id}>
+                  <td className="border px-4 py-2">{file.title}</td>
+                  <td className="border px-4 py-2">{file.pub_date}</td>
+                  <td className="border px-4 py-2">
+                    <ImageCard url={file.img} title={file.title} />
+                  </td>
+                  <td className="border px-4 py-2 overflow-auto">
+                    <div className="flex flex-col">
+                      <a
+                        href={file.url_download}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-semibold text-blue-500 hover:text-blue-600 w-52 flex text-ellipsis "
+                      >
+                        {file.url_download}
+                      </a>
+                      <button
+                        className="btn mt-2 flex justify-center"
+                        onClick={() => handleCopy(file.url_download)}
+                      >
+                        Copiar
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                        </svg>
+
+                      </button>
+                    </div>
+                  </td>
+                  <td className="border px-4 py-2 flex flex-col h-72 justify-center gap-4">
                     <button
                       className="btn btn-primary"
                       onClick={() => selectUpdate(file)}
@@ -276,18 +285,11 @@ export const FormCatalog = () => {
                     >
                       Eliminar
                     </button>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
-            {catalogs.length === 0 && (
-              <div className="flex flex-col items-center gap-2">
-                <h3 className="bg-gray-500 w-20"></h3>
-                <div className="bg-gray-500 w-28 h-40"></div>
-              </div>
-            )}
-            {/* </div> */}
-          </Swiper>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

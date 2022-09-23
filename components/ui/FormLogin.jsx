@@ -7,11 +7,11 @@ export const FormLogin = () => {
     email: "",
     password: "",
   });
-  const { login } = useAuth();
+  const { login, error } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("submit");
-    console.log(values);
+    // console.log(values);
     await login(values.email, values.password);
   };
   return (
@@ -50,10 +50,15 @@ export const FormLogin = () => {
         <button
           disabled={values.email.length === 0 || values.password.length === 0}
           type="submit"
-          className="bg-blue-500 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full max-w-lg md:w-[350px] mt-4"
+          className="bg-blue-500 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full max-w-lg md:w-[350px] mt-4 disabled:cursor-not-allowed disabled:opacity-50 disabled:ring-0"
         >
           Ingresar
         </button>
+        {error && (
+          <div className="bg-red-500 text-white rounded-md px-3 py-2">
+            {error}
+          </div>
+        )}
       </form>
     </div>
   );

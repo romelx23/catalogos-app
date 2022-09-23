@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/auth/AuthContext";
+import { baseUrl } from "../utils/config";
 
-const baseUrl = "https://pokemon-game-chat.herokuapp.com";
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,22 +15,23 @@ export const useAuth = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          correo: email,
+          email,
           password,
         }),
       });
-      const data = await res.json();
-      console.log(data);
-      if (data.msg) {
+      const { data, message } = await res.json();
+      console.log(data, message, res);
+      console.log("login");
+      if (res.status === 401 || res.status === 400) {
         setError("Usuario o contraseña incorrectos");
       } else {
-        setUserContext(true);
-        console.log(data.usuario);
         localStorage.setItem("token", data.token);
+        console.log(data);
+        setUserContext(true);
       }
       setLoading(false);
     } catch (error) {
-      setError(error);
+      console.log("error", error);
       setLoading(false);
     }
   };
@@ -45,47 +46,19 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
-  const register = async (email, password) => {
-    try {
-      const res = await fetch(`${url}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-      const json = await res.json();
-      if (json.error) {
-        setError(json.error);
-      } else {
-        setUser(json);
-      }
-      setLoading(false);
-    } catch (error) {
-      setError(error);
-      setLoading(false);
-    }
-  };
   const checkUser = async () => {
     try {
-      const res = await fetch(
-        `${baseUrl}/api/message/62f188f7296019255e44ba2e`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-token": localStorage.getItem("token"),
-          },
-        }
-      );
-      const json = await res.json();
-      console.log(json);
-      if (json.msg) {
-        setError("Usuario o contraseña incorrectos");
+      const res = await fetch(`${baseUrl}/api/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      if (res.status === 401 || res.status === 400) {
+        setError("Sesión Expirada vuelva a ingresar");
       } else {
+        const { error } = await res.json();
         setUserContext(true);
       }
       setLoading(false);
@@ -98,5 +71,5 @@ export const useAuth = () => {
     checkUser();
     console.log("useEffect checkUser");
   }, []);
-  return { user, loading, error, login, logout, register };
+  return { user, loading, error, login, logout };
 };

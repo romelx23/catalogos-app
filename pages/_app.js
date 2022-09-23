@@ -1,4 +1,4 @@
-import { AuthProvider } from "../context";
+import { AuthProvider, CatalogProvider } from "../context";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
@@ -6,7 +6,9 @@ function MyApp({ Component, pageProps }) {
   return getLayout(
     <>
       <AuthProvider>
-        <Component {...pageProps} />
+        <CatalogProvider>
+          <Component {...pageProps} />
+        </CatalogProvider>
       </AuthProvider>
     </>
   );

@@ -1,10 +1,10 @@
 import Card from "../components/ui/Card";
 import { LayoutUnique, ButtonDownload } from "../components";
 import { useFiles } from "../hooks/useFiles";
+import { useEffect } from "react";
 
 export default function Home() {
   const { files } = useFiles();
-  console.log(files);
   return (
     <div className={"p-0 min-h-screen h-full"}>
       <LayoutUnique title={"Catálogos y productos"}>

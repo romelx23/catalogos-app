@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FormCatalog, FormLogin, LayoutUnique } from "../components";
+import { ButtonTop, FormCatalog, FormLogin, LayoutUnique } from "../components";
 import { AuthContext } from "../context/auth/AuthContext";
 
 export default function Catalog() {
@@ -9,6 +9,7 @@ export default function Catalog() {
       <div className="min-h-screen w-full pt-14">
         {user ? <FormCatalog /> : <FormLogin />}
       </div>
+      <ButtonTop />
     </LayoutUnique>
   );
 }

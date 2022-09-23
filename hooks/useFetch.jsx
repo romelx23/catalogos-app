@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
+import { baseUrl } from "../utils/config";
 
 export const useFetch = () => {
-  const dev =
-    process.env.DEPLOY === "PROD"
-      ? process.env.BASE_URL
-      : "http://localhost:3000";
-  const baseUrl = `${dev}/api/catalogs`;
+  const devUrl = `${baseUrl}/api/catalog`;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const token = localStorage.getItem("token");
   const postForm = async (data) => {
     try {
-      const res = await fetch(`${baseUrl}`, {
+      const res = await fetch(`${devUrl}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": token,
         },
         body: JSON.stringify(data),
       });
@@ -28,8 +27,11 @@ export const useFetch = () => {
   };
   const deleteCatalog = async (id) => {
     try {
-      const res = await fetch(`${baseUrl}/${id}`, {
+      const res = await fetch(`${devUrl}/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": token,
+        }
       });
       const json = await res.json();
       setData(json);
@@ -41,12 +43,14 @@ export const useFetch = () => {
   };
   const updateCatalog = async (id, data) => {
     try {
-      const res = await fetch(`${baseUrl}/${id}`, {
+      const { id, ...rest } = data;
+      const res = await fetch(`${devUrl}/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: token,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(rest),
       });
       const json = await res.json();
       setData(json);
@@ -58,9 +62,9 @@ export const useFetch = () => {
   };
   const getCatalogs = async () => {
     try {
-      const res = await fetch(`${baseUrl}`);
-      const json = await res.json();
-      setData(json);
+      const res = await fetch(`${devUrl}`);
+      const { data } = await res.json();
+      setData(data);
       setLoading(false);
     } catch (error) {
       setError(error);
