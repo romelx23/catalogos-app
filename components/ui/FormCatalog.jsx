@@ -13,10 +13,12 @@ export const FormCatalog = () => {
     deleteCatalog: deleteCatalogContext,
     searchCatalog,
     catalogs,
+    catalogsSearch
   } = useContext(CatalogContext);
 
   const [update, setUpdate] = useState(false);
   const [search, setSearch] = useState("");
+  const [isSearch, setisSearch] = useState(false);
   const { values, setValues, handleInputChange, reset } = useForm({
     title: "",
     img: "",
@@ -26,13 +28,13 @@ export const FormCatalog = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // console.log(values, new Date(values.pub_date).toISOString());
-    const values = {
+    const newCatalog = {
       title: values.title,
       img: values.img,
       pub_date: new Date(values.pub_date).toISOString(),
       url_download: values.url_download,
     }
-    postForm(values);
+    postForm(newCatalog);
     addCatalog(values);
     reset();
   };
@@ -69,7 +71,12 @@ export const FormCatalog = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    searchCatalog(search);
+    if (search.trim().length > 0) {
+      searchCatalog(search);
+      setisSearch(true);
+    } else {
+      setisSearch(false);
+    }
   };
 
   const handleCopy = (file) => {
@@ -243,51 +250,100 @@ export const FormCatalog = () => {
               </tr>
             </thead>
             <tbody>
-              {catalogs.map((file) => (
-                <tr key={file.id}>
-                  <td className="border px-4 py-2">{file.title}</td>
-                  <td className="border px-4 py-2">{file.pub_date}</td>
-                  <td className="border px-4 py-2">
-                    <ImageCard url={file.img} title={file.title} />
-                  </td>
-                  <td className="border px-4 py-2 overflow-auto">
-                    <div className="flex flex-col">
-                      <a
-                        href={file.url_download}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-semibold text-blue-500 hover:text-blue-600 w-52 flex text-ellipsis "
-                      >
-                        {file.url_download}
-                      </a>
-                      <button
-                        className="btn mt-2 flex justify-center"
-                        onClick={() => handleCopy(file.url_download)}
-                      >
-                        Copiar
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                        </svg>
+              {
+                isSearch ?
+                  catalogsSearch.map((file) => (
+                    <tr key={file.id}>
+                      <td className="border px-4 py-2">{file.title}</td>
+                      <td className="border px-4 py-2">{file.pub_date}</td>
+                      <td className="border px-4 py-2">
+                        <ImageCard url={file.img} title={file.title} />
+                      </td>
+                      <td className="border px-4 py-2 overflow-auto">
+                        <div className="flex flex-col">
+                          <a
+                            href={file.url_download}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-semibold text-blue-500 hover:text-blue-600 w-52 flex text-ellipsis "
+                          >
+                            {file.url_download}
+                          </a>
+                          <button
+                            className="btn mt-2 flex justify-center"
+                            onClick={() => handleCopy(file.url_download)}
+                          >
+                            Copiar
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
 
-                      </button>
-                    </div>
-                  </td>
-                  <td className="border px-4 py-2 flex flex-col h-72 justify-center gap-4">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => selectUpdate(file)}
-                    >
-                      Actualizar
-                    </button>
-                    <button
-                      className="btn__danger"
-                      onClick={() => handleDelete(file.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                          </button>
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 flex flex-col h-72 justify-center gap-4">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => selectUpdate(file)}
+                        >
+                          Actualizar
+                        </button>
+                        <button
+                          className="btn__danger"
+                          onClick={() => handleDelete(file.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                  :
+                  catalogs.map((file) => (
+                    <tr key={file.id}>
+                      <td className="border px-4 py-2">{file.title}</td>
+                      <td className="border px-4 py-2">{file.pub_date}</td>
+                      <td className="border px-4 py-2">
+                        <ImageCard url={file.img} title={file.title} />
+                      </td>
+                      <td className="border px-4 py-2 overflow-auto">
+                        <div className="flex flex-col">
+                          <a
+                            href={file.url_download}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-semibold text-blue-500 hover:text-blue-600 w-52 flex text-ellipsis "
+                          >
+                            {file.url_download}
+                          </a>
+                          <button
+                            className="btn mt-2 flex justify-center"
+                            onClick={() => handleCopy(file.url_download)}
+                          >
+                            Copiar
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
+
+                          </button>
+                        </div>
+                      </td>
+                      <td className="border px-4 py-2 flex flex-col h-72 justify-center gap-4">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => selectUpdate(file)}
+                        >
+                          Actualizar
+                        </button>
+                        <button
+                          className="btn__danger"
+                          onClick={() => handleDelete(file.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+              }
             </tbody>
           </table>
         </div>

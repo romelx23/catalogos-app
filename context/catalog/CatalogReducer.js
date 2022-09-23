@@ -8,7 +8,7 @@ export const CatalogReducer = (state, action) => {
     case "[CATALOG] - ADD_CATALOG":
       return {
         ...state,
-        catalogs: [...state.catalog, action.payload],
+        catalogs: [...state.catalogs, action.payload],
       };
     case "[CATALOG] - UPDATE_CATALOG":
       return {
@@ -27,8 +27,8 @@ export const CatalogReducer = (state, action) => {
     case "[CATALOG] - SEARCH_CATALOG":
       return {
         ...state,
-        catalogs: state.catalogs.filter(
-          (catalog) => catalog.title === action.payload
+        catalogsSearch: state.catalogs.filter((catalog) =>
+          catalog.title.toLowerCase().includes(action.payload.toLowerCase())
         ),
       };
 

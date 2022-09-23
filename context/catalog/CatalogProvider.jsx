@@ -5,6 +5,7 @@ import { CatalogReducer } from "./CatalogReducer";
 
 export const CATALOG_INITIAL_STATE = {
     catalogs: [],
+    catalogsSearch: [],
 };
 
 export const CatalogProvider = ({ children }) => {
@@ -35,6 +36,7 @@ export const CatalogProvider = ({ children }) => {
     };
 
     const searchCatalog = (search) => {
+        console.log(search);
         dispatch({ type: "[CATALOG] - SEARCH_CATALOG", payload: search });
     };
 
