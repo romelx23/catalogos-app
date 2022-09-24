@@ -18,7 +18,7 @@ export const FormLogin = () => {
     <div className="flex justify-center">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-shrink-0 flex-col gap-4 text-white w-full max-w-sm"
+        className="flex flex-shrink-0 flex-col gap-4 w-full max-w-sm"
       >
         <h1 className="text-center font-semibold text-xl">
           Formulario de Ingreso

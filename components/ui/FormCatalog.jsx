@@ -85,7 +85,7 @@ export const FormCatalog = () => {
   return (
     <div className="w-full ">
       <div className="flex flex-col items-center justify-center">
-        <h1 className="text-xl pb-4 text-center font-semibold text-white">
+        <h1 className="text-xl pb-4 text-center font-semibold ">
           Formulario Para añadir un catálogo
         </h1>
         <form
@@ -205,16 +205,16 @@ export const FormCatalog = () => {
       </div>
       <div className="w-full flex flex-col items-center pt-4">
         <div className="flex flex-col pb-4">
-          <h1 className="text-xl pb-4 text-center font-semibold text-white">
+          <h1 className="text-xl pb-4 text-center font-semibold ">
             Catálogos
           </h1>
-          <form onSubmit={(e) => handleSearch(e)} className="flex">
+          <form onSubmit={(e) => handleSearch(e)} className="flex text-white">
             <input
               type="text"
               placeholder="Buscar catálogo"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-gray-600 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full max-w-lg md:w-[350px] ml-4"
+              className="bg-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full max-w-lg md:w-[350px] ml-4"
             />
             <button
               type="submit"
@@ -239,7 +239,7 @@ export const FormCatalog = () => {
           </form>
         </div>
         <div className="w-full px-8 overflow-x-auto mb-4">
-          <table className="table-auto w-full mt-4 mb-2 text-white">
+          <table className="table-auto w-full mt-4 mb-2">
             <thead>
               <tr>
                 <th className="px-4 py-2 capitalize">Título</th>
@@ -252,7 +252,7 @@ export const FormCatalog = () => {
             <tbody>
               {
                 isSearch ?
-                  catalogsSearch.map((file) => (
+                  catalogsSearch.length !== 0 ? catalogsSearch.map((file) => (
                     <tr key={file.id}>
                       <td className="border px-4 py-2">{file.title}</td>
                       <td className="border px-4 py-2">{file.pub_date}</td>
@@ -297,6 +297,10 @@ export const FormCatalog = () => {
                       </td>
                     </tr>
                   ))
+                    :
+                    <tr>
+                      <td className="border px-4 py-2 text-center" colSpan="5">No se encontraron resultados</td>
+                    </tr>
                   :
                   catalogs.map((file) => (
                     <tr key={file.id}>

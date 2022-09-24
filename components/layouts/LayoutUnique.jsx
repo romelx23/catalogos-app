@@ -69,7 +69,7 @@ export const LayoutUnique = ({ title, children }) => {
       </Head>
       {/* Nabvar */}
       <Navbar />
-      <main className="min-h-screen h-full">{children}</main>
+      <main className="h-full">{children}</main>
     </>
   );
 };

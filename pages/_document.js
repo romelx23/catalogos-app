@@ -10,7 +10,7 @@ class MyDocument extends Document {
             rel="apple-touch-icon"
             href="./public/assets/icon-192x192.png"
           ></link>
-          <meta name="theme-color" content="#2196f3" />
+          <meta name="theme-color" content="#d23c3a" />
         </Head>
         <body>
           <Main />

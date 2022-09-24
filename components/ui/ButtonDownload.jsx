@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 export const ButtonDownload = () => {
-  // boton para descargar la aplicación pwa
   const [isReadyForInstall, setIsReadyForInstall] = React.useState(false);
 
   const handleDownload = async (e) => {
@@ -41,7 +40,7 @@ export const ButtonDownload = () => {
       <div className="text-white hidden md:flex flex-col items-center mb-4">
         <p className="pb-2">Este boton descargará la aplicación</p>
         <button
-          className="btn btn-primary flex gap-2"
+          className="btn__catalog flex gap-2"
           onClick={handleDownload}
           aria-label="Instalar app"
           title="Descargar aplicación"
@@ -65,7 +64,7 @@ export const ButtonDownload = () => {
       </div>
       <div className="fixed right-2 bottom-2 text-white md:hidden block">
         <button
-          className="btn btn-primary"
+          className="btn__catalog"
           onClick={handleDownload}
           aria-label="Instalar app"
           title="Descargar aplicación"

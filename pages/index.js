@@ -10,7 +10,7 @@ export default function Home() {
       <LayoutUnique title={"Catálogos y productos"}>
         <div className="my-5 flex flex-col min-h-[80vh]">
           <div className="flex justify-center">
-            <h1 className="pt-4 pb-4 text-center font-semibold text-xl text-white">
+            <h1 className="pt-4 pb-4 text-center font-semibold text-xl">
               Más Catálogos para ti ...
             </h1>
             <img
@@ -30,19 +30,6 @@ export default function Home() {
                 <h1 className="text-white font-semibold">Cargando ...</h1>
               </div>
             )}
-          </div>
-          <div className="mt-5 py-3 text-white text-center w-100">
-            <p className="m-0">
-              Hecho con ❤️ por{" "}
-              <a
-                href="
-              http://localhost:3000/"
-                target="_blank"
-                className="text-decoration-none text-white"
-              >
-                Alicia
-              </a>
-            </p>
           </div>
         </div>
         <ButtonDownload />

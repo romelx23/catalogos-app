@@ -3,11 +3,19 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gray-800 min-h-screen block;
+  @apply bg-gray-100 min-h-screen block transition-colors;
+}
+
+body.dark {
+  @apply bg-gray-800 text-white;
 }
 
 .btn {
   @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+}
+
+.btn__catalog {
+  @apply bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded;
 }
 
 .btn__danger {
@@ -33,4 +41,13 @@ div.swiper-button-prev {
 div.swiper-button-next,
 div.swiper-button-prev {
   @apply bg-gray-700  font-bold rounded-full p-10 text-white;
+}
+
+.card {
+  @apply text-gray-800 border-0 md:w-72 w-52 flex flex-col justify-between py-4 px-4 rounded-md shadow-md hover:shadow-lg duration-300 transition ease-in-out;
+  background: #e0dde1;
+}
+
+.dark .card {
+  @apply text-white bg-gray-700/80;
 }
